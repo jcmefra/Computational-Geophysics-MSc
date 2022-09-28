@@ -1,0 +1,38 @@
+close all
+clear all
+clc
+load ('jitorres_crosswell.mat')
+sigma=0.5;
+for i=1:256
+v(i)=1/sigma ;
+end
+%Matriz
+W=diag(v,0);
+Gw=W*G;
+dw=W*dn;
+%Algoritmo de Kaczmarz
+m=zeros(256,1);
+residual=1;
+%contador=0;
+%while residual>0.0001
+for j=1:5221
+for i=1:255
+    m=m-((((Gw(i,:)*m)-dw(i))/(Gw(i,:)*Gw(i,:)'))*(Gw(i,:)'));
+end
+%contador=contador+1;
+%residual=norm(((Gw*m)-dw));
+residual(j)=norm(((Gw*m)-dw));
+res1(j)=norm(m,1);
+end
+figure, imagesc(reshape(m,16,16))
+title('Algoritmo Kaczmarzs')
+figure, semilogx(residual)
+title('Norma L2 para los residuales')
+xlabel('Iteraciones')
+ylabel('Residual Norm ||Gm-d||_2')
+figure, loglog(res1)
+title('Norma L2 para los m')
+xlabel('Iteraciones')
+ylabel('Residual Norm ||m||_2')
+
+
