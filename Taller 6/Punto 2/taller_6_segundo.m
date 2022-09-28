@@ -1,0 +1,77 @@
+% Taller 6 segundo punto
+clc
+clear all
+close all
+%Carga de la matriz G y el vector de observaciones dn en el espacio de
+%trabajo
+load jitorres_vgdata.mat
+%Valores del enunciado
+sigma=0.02;
+theta_r= 0.09;
+theta_s =0.44;
+%Ecuacion no lineal
+syms alpha n h1;
+theta_h= theta_r+(theta_s - theta_r)/(1+(-alpha*h1)^n)^(1-1/n);
+%Derivadas
+da=diff(theta_h,alpha);
+dn=diff(theta_h,n);
+%Creacion de la matriz jacobiana nx2
+tic
+m=length(h);
+for i=1:m
+    J(i,1)=subs(da,h1,h(i))/sigma;
+    J(i,2)=subs(dn,h1,h(i))/sigma;
+end
+%F_vector
+for i=1:m
+    F(i)=(subs(theta_h,h1,h(i))-theta(i))/sigma;
+end
+%Condiciones iniciales[S,T].
+alpha=7.5e-3; 
+n=5; 
+Deltam=[1 1];
+lambda=100; 
+for i=1:10
+    %Evalua J y F
+    J1=eval(J);
+    F1=eval(F);
+    norm(F1)
+    %3y4
+    A=J1'*J1+lambda*eye(2,2);
+    b=-J1'*F1';
+    %Ab=[A b];
+    sol=linsolve(A,b);
+    Deltam=sol;
+    alpha=alpha+Deltam(1);
+    n=n+Deltam(2);
+    if mod(i,2)== 0
+       lambda=lambda/2;
+    end  
+end
+% Análisis estadístico
+cov=inv(A);
+incer=-1.96*sqrt(diag(cov));
+alpha1=alpha+incer(1);
+alpha2=alpha-incer(1);
+inter_alpha=[alpha1 alpha2];
+n1=n+incer(2);
+n2=n-incer(2);
+inter_n=[n1 n2];
+for i=1:m
+    fun(i)=eval(subs(theta_h,h1,h(i)));
+end
+toc
+%elipsoide de error
+Vector_m = [alpha;n];
+Delta2 = chi2inv(0.95,2);
+plot_ellipse(Delta2,cov,Vector_m,10000)
+% Grafica
+figure, plot(h, theta,'b*')
+hold on
+grid on
+plot(h,fun,'ro')
+xlabel('Elevación de la tabla de agua (m)')
+ylabel('Saturación del agua (\theta)')
+legend('obs', 'mod')
+title("Gráfica comparativa entre los parámetros estimados y las observaciones")
+
