@@ -1,0 +1,44 @@
+close all
+clear all
+clc
+load("jitorres_crosswell.mat")
+
+sigma = 5e-4;
+for i = 1:256
+    v(i) = 1/sigma;
+end
+%Matriz
+W = diag(v,0);
+Gw = W*G;
+dw = W*dn;
+[U,S,V] = svd(Gw);
+Rank_Gw = rank(Gw);
+for i = 1:100
+    P = 243-i;
+    Up = U(:,1:P);
+    Vp = V(:,1:P);
+    Sp = S(1:P,1:P);
+    G_dagger = Vp*inv(Sp)*Up';
+    m_dagger (:,i) = G_dagger*dw; %G_dagger*dn;
+    Nm(i) = norm(Vp*inv(Sp)*Up'*dw);
+    Nresidual(i) = norm((Up*(Sp*Vp'*m_dagger(:,i)))-dw); 
+end
+
+%Matriz de resolución
+[Ux,Sx,Vx] = svds(Gw,(243-15));
+Gdagger_x = Vx*inv(Sx)*Ux';
+Mdagger_x = Gdagger_x*dw;
+
+semilogx(Nresidual,Nm)
+title("Curva L")
+xlabel('Norma residual ||Gm - d||_2')
+ylabel('Norma de la solución ||m||_2')
+
+figure
+mesh (Rm)
+colorbar
+
+figure, imagesc(reshape(m_dagger(:,15),16,16))
+title('inversión del bloque')
+colorbar
+
