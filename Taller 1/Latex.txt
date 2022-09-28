@@ -1,0 +1,64 @@
+\documentclass[12pt]{spieman}  % 12pt font required by SPIE;
+%\documentclass[a4paper,12pt]{spieman}  % use this instead for A4 paper
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage[final]{graphicx}
+\usepackage{setspace}
+\usepackage{tocloft}
+
+\title{Curso de Geofísica Computacional. Taller 1: Regresión Lineal}
+
+\author[a]{Juan Camilo Mejía Fragoso}
+\affil[a]{Universidad Industrial de Santander, Escuela de Física, Maestría en Geofísica}
+
+\renewcommand{\cftdotsep}{\cftnodots}
+\cftpagenumbersoff{figure}
+\cftpagenumbersoff{table} 
+\begin{document} 
+\maketitle
+
+\begin{abstract}
+El proposito de este primer taller es aplicar las técnicas de regresión lineal para resolver problemas inversos sencillos.
+\end{abstract}
+
+% Include a list of up to six keywords after the abstract
+\keywords{geofísica, computacional, regresión, lineal}
+
+% Include email contact information for corresponding author
+{\noindent \footnotesize\textbf{*}Juan Camilo Mejía Fragoso,  \linkable{juan2228283@correo.uis.edu.co} }
+
+\begin{spacing}{2}   % use double spacing for rest of manuscript
+
+\section{Primer Punto}
+\label{sect:intro}  % \label{} allows reference to this section
+Tres esferas están enterradas en un semi-espacio uniforme de baja densidad, con la geometría que se muestra en la figura 1. Los triágulos representan seis estaciones gravimétricas, donde la anomalía ∆gi es conocida. Plantee el problema inverso para las masas desconocidas (M1, M2, M3) en la forma $GM=d$. La componente vertical de g esta dada por $g_{z}=GMh/r^3$, donde G es la constante de gravitación universal. Asuma M1 directamente debajo de la estación 3, M2 directamente debajo de la estación 4 y M3 directamente debajo de la estación 5.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics{{Fig 1.png}}
+  \caption{Diagrama del ejercicio.}
+\end{figure}
+
+\subsection{Planteamiento y resolución del problema}
+
+Se debe pasar de la ecuación que describe al fenómeno físico $g_{z}=GMh/r^3$ a la forma $GM=d$, donde G es la física del fenómeno bajo estudio; M los parámetros, en este caso las masas; y d los datos tomados por las seis estaciones.
+
+Podemos partir desde el hecho de que G y h son constantes, por lo que nuestra ecuación podría verse de la siguiente manera: $g_{z}=Gh(M/r^3)$ (ecuación 1). Como debemos pasarla a la forma $GM=d$, es necesario separar M y r: $g_{z}=Gh(1/r^3)(M)$ (ecuación 2)
+
+De la ecuación 2 podemos deducir que G = $1/r_{mn}^3$, M = $M_{n}$ y d = $g_{zm}$, en donde m es el número de estaciones y n el número de masas. Al haber 6 estaciones y 3 masas, nuestro problema inverso se podría tratar como un sistema de ecuaciones definido por una matriz y un vector, y quedaría de la forma $G_{6x3}*M_{3x1}=d_{6x1}$ (ecuación 3).
+
+Con base en las ecuaciones 2 y 3, el planteamiento del problema inverso quedaría de la siguiente manera:
+
+\begin{gather}
+ \text{}{Gh}
+  \begin{bmatrix}
+    \frac{1}{r_{11}^3} & \frac{1}{r_{12}^3} & \frac{1}{r_{13}^3}\\
+    \frac{1}{r_{21}^3} & \frac{1}{r_{22}^3} & \frac{1}{r_{23}^3}\\
+    \frac{1}{r_{31}^3} & \frac{1}{r_{32}^3} & \frac{1}{r_{33}^3}\\
+    \frac{1}{r_{41}^3} & \frac{1}{r_{42}^3} & \frac{1}{r_{43}^3}\\
+    \frac{1}{r_{51}^3} & \frac{1}{r_{52}^3} & \frac{1}{r_{53}^3}\\
+    \frac{1}{r_{61}^3} & \frac{1}{r_{62}^3} & \frac{1}{r_{63}^3}
+   \end{bmatrix}
+   =
+    \begin{bmatrix} M_{1} \\ M_{2} \\ M_{3}
+    \end{bmatrix}
+\end{gather}
