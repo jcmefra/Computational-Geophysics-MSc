@@ -1,4 +1,4 @@
-from math import sqrt
+#from math import sqrt
 import heuristics
 from heuristics import punto1 
 import matplotlib as cm 
