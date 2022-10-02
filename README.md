@@ -1,2 +1,2 @@
-# Geophysics-MSc
-Many codes I did in my MSc studies.
+# Computational_Geophysics
+Many codes I did for Computational Geophysics.
